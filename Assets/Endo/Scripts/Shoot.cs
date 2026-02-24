@@ -41,7 +41,7 @@ public class Shoot : MonoBehaviour
         {
             _isInHideWall = true;
         }
-        Debug.Log("íeêGÇÍÇÈ");
+        //Debug.Log("íeêGÇÍÇÈ");
     }
 
     void OnTriggerExit2D(Collider2D other)

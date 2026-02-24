@@ -9,9 +9,23 @@ public class PlayerMove : MonoBehaviour
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            transform.Translate(Vector2.right * movespeed);
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            transform.Translate(Vector2.left * movespeed);
+        }
+
+        float Posx = Mathf.Clamp(transform.position.x, -movespeed, movespeed);
+
+        transform.position = new Vector3(Posx, transform.position.y, transform.position.z);
+
+
         //GetAxisRaw‚ÅˆÚ“®‚ð“ü—Í
-        float h = Input.GetAxisRaw("Horizontal");
-        transform.Translate(Vector2.right * h * movespeed * Time.deltaTime);
+        //float h = Input.GetAxisRaw("Horizontal");
+        //transform.Translate(Vector2.right * h * movespeed * Time.deltaTime);
     }
 
 }
