@@ -2,53 +2,46 @@ using UnityEngine;
 
 public class Shoot : MonoBehaviour
 {
+    [SerializeField] private AimRay _aimRay;
     [SerializeField] private float _speed = 3.0f;
-    [SerializeField] private GameObject _snowball;
-    //ƒN[ƒ‹ƒ^ƒCƒ€’Ç‰Á
-    [SerializeField] private float _cooltime = 2f;
-    private float _nextFireTime = 0f;
-    //•Ç‚Ì”ÍˆÍ‚É‚¢‚éŠÔ
+    [SerializeField] private GameObject _bullet;
+
+    //å£ã®ãƒˆãƒªã‚¬ãƒ¼å†…ã«ã„ã‚‹ã¨ãã¯æ‰“ã¦ãªã„
     private bool _isInHideWall = false;
 
-    private Vector2 mousePos;
-
-    void Update()
+    private void Update()
     {
-        mousePos = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        // å·¦ã‚¯ãƒªãƒƒã‚¯ã‹ã¤ã€Œå¤–ã«ã„ã‚‹ã¨ãã€ã ã‘ç™ºå°„
+        if (!Input.GetMouseButtonDown(0) || _isInHideWall) return;
 
-        if (Input.GetMouseButtonDown(0) && Time.time >= _nextFireTime && !_isInHideWall) // ¶ƒNƒŠƒbƒN
-        {
-            _nextFireTime = Time.time + _cooltime;@
+        Vector2 mousePos = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        GameObject bullet = Instantiate(_bullet, transform.position, Quaternion.identity);
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã¨å¼¾ã®è¡çªã‚’ç„¡è¦–ï¼ˆè‡ªåˆ†ã«å½“ãŸã£ã¦æ¶ˆãˆãªã„ã‚ˆã†ã«ï¼‰
+        Collider2D bulletCol = bullet.GetComponent<Collider2D>();
+        Collider2D playerCol = GetComponent<Collider2D>();
+        if (bulletCol != null && playerCol != null)
+        Physics2D.IgnoreCollision(bulletCol, playerCol);
 
-            GameObject snowballIns = Instantiate(_snowball, transform.position, Quaternion.identity);
+        Bullet bulletScript = bullet.GetComponent<Bullet>();
+        // ãƒ¬ã‚¤ã®çµ‚ç‚¹ã¾ã§é£›ã°ã™ãƒ»ãƒã‚¦ã‚¹ä½ç½®ã§æ¶ˆãˆã‚‹ã‚ˆã†ã«è¨­å®š
+        bulletScript.Init(transform.position, _aimRay._endPos);
+        bulletScript.SetDestroyAt(mousePos);
 
-            //ƒ}ƒEƒXƒJ[ƒ\ƒ‹•ûŒüŒˆ‚ß‚ê‚é
-            Vector2 direction = (mousePos - (Vector2)transform.position).normalized;
-
-            snowballIns.GetComponent<Rigidbody2D>().velocity = direction * _speed;
-
-            //’e‚ğÁ‚·“ñ•bŒã
-            Destroy(snowballIns,1f);
-        }
-
+        Vector2 direction = (mousePos - (Vector2)transform.position);
+        bullet.GetComponent<Rigidbody2D>().velocity = direction * _speed;
     }
 
-
-    //•Ç‚Ì”ÍˆÍ‚É‚¢‚éŠÔ‚Íá‹Ê‚ğ“Š‚°‚ê‚È‚¢‚æ‚¤‚É‚·‚é
-    void OnTriggerEnter2D(Collider2D other)
+    // æ‰“ã¦ãªããªã‚‹
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("HideWall"))
-        {
             _isInHideWall = true;
-        }
-        //Debug.Log("’eG‚ê‚é");
     }
 
-    void OnTriggerExit2D(Collider2D other)
+    // æ‰“ã¦ã‚‹ã‚ˆã†ã«ã™ã‚‹
+    private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("HideWall"))
-        {
             _isInHideWall = false;
-        }
     }
 }

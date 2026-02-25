@@ -1,31 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMove : MonoBehaviour
 {
-    //ƒvƒŒƒCƒ„[‚Ì‘¬“xİ’èi•ÏX‰Âj
-    public float movespeed = 5f;
+    [SerializeField] private float _centerX = 0f;           // å¸¸ã«ã„ã‚‹ä¸­å¿ƒã®X
+    [SerializeField] private float _stickOutAmount = 2f;     // D/AæŠ¼ã—ã¦ã‚‹æ™‚ã«ã¯ã¿å‡ºã™è·é›¢
+    [SerializeField] private float _moveSpeed = 8f;          // ä¸­å¤®â‡”å·¦å³ã¸ã®æˆ»ã‚Šé€Ÿã•
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            transform.Translate(Vector2.right * movespeed);
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            transform.Translate(Vector2.left * movespeed);
-        }
+        float targetX = _centerX;
 
-        float Posx = Mathf.Clamp(transform.position.x, -movespeed, movespeed);
+        if (Input.GetKey(KeyCode.D))
+            targetX = _centerX + _stickOutAmount;
+        else if (Input.GetKey(KeyCode.A))
+            targetX = _centerX - _stickOutAmount;
 
-        transform.position = new Vector3(Posx, transform.position.y, transform.position.z);
-
-
-        //GetAxisRaw‚ÅˆÚ“®‚ğ“ü—Í
-        //float h = Input.GetAxisRaw("Horizontal");
-        //transform.Translate(Vector2.right * h * movespeed * Time.deltaTime);
+        float newX = Mathf.MoveTowards(transform.position.x, targetX, _moveSpeed * Time.deltaTime);
+        transform.position = new Vector3(newX, transform.position.y, transform.position.z);
     }
-
 }
