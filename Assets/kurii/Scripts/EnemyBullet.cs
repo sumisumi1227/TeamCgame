@@ -21,6 +21,11 @@ public class EnemyBullet : MonoBehaviour
                 return;  // 隠れ中は当たらない（弾は通過）
 
             Debug.Log("敵の雪がプレイヤーに当たった");
+
+            PlayerHP hp = other.GetComponent<PlayerHP>();
+            if (hp != null)
+                hp.TakeDamage(1);
+
             Destroy(gameObject);
         }
         else if (other.CompareTag("HideWall"))
