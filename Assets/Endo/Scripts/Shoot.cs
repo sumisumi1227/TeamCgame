@@ -6,8 +6,14 @@ public class Shoot : MonoBehaviour
     [SerializeField] private float _speed = 3.0f;
     [SerializeField] private GameObject _bullet;
 
+    private Animator _anim;
+
     //壁のトリガー内にいるときは打てない
     private bool _isInHideWall = false;
+      private void Start()
+    {
+        _anim = GetComponent<Animator>();
+    }
 
     private void Update()
     {
@@ -29,6 +35,8 @@ public class Shoot : MonoBehaviour
 
         Vector2 direction = (mousePos - (Vector2)transform.position);
         bullet.GetComponent<Rigidbody2D>().velocity = direction * _speed;
+
+        _anim.SetTrigger("IsAttack");
     }
 
     // 打てなくなる
