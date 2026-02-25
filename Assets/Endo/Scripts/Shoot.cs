@@ -9,6 +9,8 @@ public class Shoot : MonoBehaviour
     //壁のトリガー内にいるときは打てない
     private bool _isInHideWall = false;
 
+    public bool IsInHideWall => _isInHideWall;
+
     private void Update()
     {
         // 左クリックかつ「外にいるとき」だけ発射
