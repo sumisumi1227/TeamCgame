@@ -8,6 +8,9 @@ public class AimRay : MonoBehaviour
 
     private Camera _camera;
 
+    /// <summary> AまたはDを押しているときだけtrue（照準・カーソル表示用） </summary>
+    public bool IsAiming => Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D);
+
     void Start()
     {
         _camera = Camera.main;
@@ -15,24 +18,34 @@ public class AimRay : MonoBehaviour
 
     void Update()
     {
+        Cursor.visible = false;
         _endPos = GetRayEndPosition();
         Debug.DrawLine(transform.position, _endPos, Color.red);
     }
 
     Vector2 GetRayEndPosition()
     {
-        Vector3 mouseWorld = _camera.ScreenToWorldPoint(Input.mousePosition);
-        mouseWorld.z = 0f;
+        if (!IsAiming)
+            return _endPos;
 
-        Vector2 direction = (mouseWorld - transform.position).normalized;
+        Vector3 viewport = _camera.ScreenToViewportPoint(Input.mousePosition);
+        if (Input.GetKey(KeyCode.A))
+            viewport.x = Mathf.Clamp(viewport.x, 0f, 0.5f);
+        else if (Input.GetKey(KeyCode.D))
+            viewport.x = Mathf.Clamp(viewport.x, 0.5f, 1f);
+
+        float dist = Mathf.Abs(_camera.transform.position.z);
+        Vector3 targetWorld = _camera.ViewportToWorldPoint(new Vector3(viewport.x, viewport.y, dist));
+        targetWorld.z = 0f;
+
+        Vector2 direction = ((Vector2)targetWorld - (Vector2)transform.position).normalized;
         float maxDistance = 100f;
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, direction, maxDistance, hitLayer);
 
         if (hit.collider != null)
             return hit.point;
-        else
-            return GetScreenEdgePosition(direction);
+        return GetScreenEdgePosition(direction);
     }
 
     Vector2 GetScreenEdgePosition(Vector2 direction)

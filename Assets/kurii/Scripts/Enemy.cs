@@ -147,8 +147,8 @@ public class Enemy : MonoBehaviour
         {
             // 3方向に同時投げ（中央・左30°・右30°）
             FireOne(baseDir);
-            FireOne(RotateVector2(baseDir, -30f));
-            FireOne(RotateVector2(baseDir, 30f));
+            FireOne(RotateVector2(baseDir, -20f));
+            FireOne(RotateVector2(baseDir, 20f));
         }
         else
         {
