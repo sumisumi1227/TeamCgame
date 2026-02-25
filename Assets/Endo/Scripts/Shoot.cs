@@ -18,12 +18,18 @@ public class Shoot : MonoBehaviour
     private float _sKeyHoldTime;
     private float _debuffTimer;
     private float _creationProgress;
+    private Animator _amim;
 
     public bool IsInHideWall => _isInHideWall;
     public int SnowballStock => _snowballStock;
     public int MaxStock => _maxStock;
     public bool IsSnowballCreateSlowed => _debuffTimer > 0f;
     public float CreationProgress => _creationProgress;
+
+    private void Start()
+    {
+        _amim = GetComponent<Animator>();
+    }
 
     private void OnEnable()
     {
@@ -90,6 +96,8 @@ public class Shoot : MonoBehaviour
 
         Vector2 direction = (mousePos - (Vector2)transform.position);
         bullet.GetComponent<Rigidbody2D>().velocity = direction * _speed;
+
+        _amim.SetTrigger("IsAttack");
     }
 
     private void OnTriggerEnter2D(Collider2D other)
