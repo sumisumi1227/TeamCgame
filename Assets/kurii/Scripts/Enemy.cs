@@ -33,6 +33,8 @@ public class Enemy : MonoBehaviour
     private enum State { Hidden, ComingOut, Out, GoingBack, Dying }
     private State _state;
 
+    private GameObject _playergameObject;
+
     private void Awake()
     {
         _collider = GetComponent<Collider2D>();
@@ -139,9 +141,9 @@ public class Enemy : MonoBehaviour
 
     private void ThrowSnow()
     {
-        GameObject player = GameObject.FindWithTag("Player");
-        if (player == null) return;
-        Vector2 baseDir = ((Vector2)player.transform.position - (Vector2)transform.position).normalized;
+        _playergameObject = GameObject.FindWithTag("Player");
+        if (_playergameObject == null) return;
+        Vector2 baseDir = ((Vector2)_playergameObject.transform.position - (Vector2)transform.position).normalized;
 
         if (_isTripleShot)
         {
@@ -158,7 +160,10 @@ public class Enemy : MonoBehaviour
 
     private void FireOne(Vector2 direction)
     {
-        GameObject snow = Instantiate(_enemySnowPrefab, transform.position, Quaternion.identity);
+        Vector2 target = (Vector2)_playergameObject.transform.position;
+		Vector2 dir = (target - (Vector2)transform.position).normalized;
+		float _snowBallAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        GameObject snow = Instantiate(_enemySnowPrefab, transform.position, Quaternion.Euler(0, 0, _snowBallAngle));
         Rigidbody2D rb = snow.GetComponent<Rigidbody2D>();
         if (rb != null)
             rb.velocity = direction.normalized * _throwSpeed;

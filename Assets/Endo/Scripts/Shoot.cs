@@ -75,7 +75,9 @@ public class Shoot : MonoBehaviour
 
         Vector2 endPos = _aimRay._endPos;
         Vector2 mousePos = (Vector2)Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        GameObject bullet = Instantiate(_bullet, transform.position, Quaternion.identity);
+		Vector2 dir = (mousePos - (Vector2)transform.position).normalized;
+		float _snowBallAngle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+		GameObject bullet = Instantiate(_bullet, transform.position, Quaternion.Euler(0, 0, _snowBallAngle));
 
         Collider2D bulletCol = bullet.GetComponent<Collider2D>();
         Collider2D playerCol = GetComponent<Collider2D>();
